@@ -120,17 +120,15 @@
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
     </script>
-
     <script>
       const db = firebase.firestore();
       const storage = firebase.storage();
 
-      var 뺀거 = localStorage.getItem("user");
-      $("#userName").html(JSON.parse(뺀거).displayName);
+      let 뺀거 = localStorage.getItem("user");
+      // $("#userName").html(JSON.parse(뺀거).displayName);
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          console.log(user.uid);
-          console.log(user.displayName);
+          console.log(user);
           localStorage.setItem("user", JSON.stringify(user));
         }
       });
@@ -161,6 +159,11 @@
           .auth()
           .createUserWithEmailAndPassword(이메일, 패스워드)
           .then((result) => {
+            let 유저정보 = {
+              name: 이름,
+              email: 이메일,
+            };
+            db.collection("user").doc(result.user.uid).set({});
             console.log(result);
             console.log(result.user);
             result.user.updateProfile({ displayName: 이름 });

@@ -38,24 +38,22 @@
         </div>
       </div>
     </nav>
-
-    <div class="container">
-      상세페이지임
-      <button id="edit">수정</button>
-      <div
-        class="detail-pic my-4"
-        style="background-image: url('https://placeimg.com/640/380/tech')"
-      ></div>
-      <div>
-        <h5>올린사람 : 모름</h5>
-        <hr />
-        <h5 class="title">제목</h5>
-        <p class="date">올린날짜</p>
-        <p class="price">가격</p>
-      </div>
+    <div class="container mt-3">
+      <input
+        type="text"
+        class="form-control mt-2"
+        id="title"
+        placeholder="title"
+      />
+      <textarea class="form-control mt-2" id="content">content</textarea>
+      <input
+        type="text"
+        class="form-control mt-2"
+        id="price"
+        placeholder="price"
+      />
+      <button class="btn btn-danger mt-3" id="send">올리기</button>
     </div>
-    <button class="btn btn-outline-secondary" id="edit">수정</button>
-    <button class="btn btn-outline-secondary" id="chat">채팅</button>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
@@ -93,38 +91,20 @@
       const storage = firebase.storage();
 
       let queryString = new URLSearchParams(window.location.search);
-      let 판매자uid;
-      let 상품명;
+      queryString.get("id");
 
       db.collection("product")
         .doc(queryString.get("id"))
         .get()
         .then((result) => {
-          판매자uid = result.adta().uid;
-          상품명 = result.data().제목;
-
-          $(".author").html("올린사람: " + result.data().이름);
-          $(".title").html(result.data().제목);
-          $(".price").html(result.data().가격 + "원");
-          $(".detail-pic").css(
-            "background-image",
-            `url(${result.data().이미지})`
-          );
+          console.log(result.data());
+          $("#title").val(result.data().제목);
+          $("#content").val(result.data().내용);
         });
 
-      $("#edit").click(function () {
-        window.location.href = "/edit.html?id=" + queryString.get("id");
-      });
-
-      let 내uid = JSON.parse(localStorage.getItem("user")).uid;
-
-      $("#chat").click(function () {
-        var 데이터 = {
-          who: [내uid, 판매자uid],
-          product: 상품명,
-          date: new Date(),
-        };
-        db.collection("chatroom").add(데이터);
+      $("#send").click(function () {
+        let 바꿀꺼 = { 제목: $("#title").val(), 가격: $("#price").val() };
+        db.collection("product").doc(queryString.get("id")).update(바꿀거);
       });
     </script>
   </body>
